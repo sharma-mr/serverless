@@ -67,9 +67,13 @@ public class EmailEvent {
             amazonDynamoDB.getTable(tableName).putItem(new PutItemSpec()
                     .withItem(new Item().withString("id", emailRecipient).withLong("TTL", unixTime)));
             String[] billLinks = messageFromSQS.split(",");
-            List<String> wordList = Arrays.asList(billLinks);
-            String HTMLBODY = "<h1> Email for due bills"
-                    + "<p>This email was sent for your due bills";
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int index = 1; index < billLinks.length; index++) {
+                stringBuilder.append("\n");
+                stringBuilder.append(billLinks[index]);
+            }
+            Content content = new Content().withData(stringBuilder.toString());
+            Body body = new Body().withText(content);
             try {
                 AmazonSimpleEmailService client =
                         AmazonSimpleEmailServiceClientBuilder.standard()
@@ -78,11 +82,7 @@ public class EmailEvent {
                         .withDestination(
                                 new Destination().withToAddresses(emailRecipient))
                         .withMessage(new Message()
-                                .withBody(new Body()
-                                        .withHtml(new Content()
-                                                .withCharset("UTF-8").withData(HTMLBODY))
-                                        .withText(new Content()
-                                                .withCharset("UTF-8").withData(EMAIL_TEXT)))
+                                .withBody(body)
                                 .withSubject(new Content()
                                         .withCharset("UTF-8").withData(EMAIL_SUBJECT)))
                         .withSource(SENDER_EMAIL);
