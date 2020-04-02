@@ -59,6 +59,7 @@ public class EmailEvent {
             context.getLogger().log("There are no records available");
             return null;
         }
+
         String messageFromSQS =  request.getRecords().get(0).getSNS().getMessage();
         String emailRecipient = messageFromSQS.split(",")[0];
         Item item = amazonDynamoDB.getTable(tableName).getItem("id", emailRecipient);
