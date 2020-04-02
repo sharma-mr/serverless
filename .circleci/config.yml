@@ -57,9 +57,9 @@ jobs:
             cd ..
       - run:
            name: Update Lambda on S3
-          command: |
+           command: |
             echo "Invoking Lambda update function"
-            aws lambda update-function-code --function-name  SendEmailOnSNS  --s3-bucket ${BUCKET_NAME} --s3-key serverless-0.0.1-SNAPSHOT.jar --region ${AWS_REGION} > log.txt
+            aws lambda update-function-code --function-name  SendEmailOnSNS  --s3-bucket ${CODE_DEPLOY_S3_BUCKET} --s3-key serverless-0.0.1-SNAPSHOT.jar --region ${AWS_REGION} > log.txt
 
 workflows:
   version: 2
