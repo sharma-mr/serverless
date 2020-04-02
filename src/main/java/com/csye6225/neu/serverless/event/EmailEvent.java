@@ -72,6 +72,7 @@ public class EmailEvent {
                 stringBuilder.append("\n");
                 stringBuilder.append(billLinks[index]);
             }
+
             Content content = new Content().withData(stringBuilder.toString());
             Body body = new Body().withText(content);
             try {
