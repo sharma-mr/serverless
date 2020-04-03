@@ -51,7 +51,7 @@ public class EmailEvent {
             Table table = iterator.next();
             context.getLogger().log("Dynamo db table name:- " + table.getTableName());
         }
-        Table table = amazonDynamoDB.getTable(tableName);
+        Table table = amazonDynamoDB.getTable("dynamoDBTable");
         if(table == null)
             context.getLogger().log("Table not present in dynamoDB");
 
