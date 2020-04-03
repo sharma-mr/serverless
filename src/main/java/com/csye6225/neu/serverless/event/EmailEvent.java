@@ -1,5 +1,6 @@
 package com.csye6225.neu.serverless.event;
 
+import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
@@ -28,11 +29,10 @@ public class EmailEvent {
     @Value("${tableName}")
     private String tableName;
 
-    @PostConstruct
-    private void init() {
-        AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard()
-                .withRegion(Regions.US_EAST_1)
-                .build();
+
+    public EmailEvent() {
+        AmazonDynamoDBClient client = new AmazonDynamoDBClient();
+        client.setRegion(Region.getRegion(Regions.US_EAST_1));
         this.amazonDynamoDB = new DynamoDB(client);
     }
 
@@ -45,20 +45,20 @@ public class EmailEvent {
     private static final String EMAIL_TEXT = "The links for the due bills are :- ";
 
     public Object handleRequest(SNSEvent request, Context context){
-//        TableCollection<ListTablesResult> tables = amazonDynamoDB.listTables();
-//        Iterator<Table> iterator = tables.iterator();
-//        while (iterator.hasNext()) {
-//            Table table = iterator.next();
-//            context.getLogger().log("Dynamo db table name:- " + table.getTableName());
-//        }
-//        Table table = amazonDynamoDB.getTable(tableName);
-//        if(table == null)
-//            context.getLogger().log("Table not present in dynamoDB");
-//
-//        if (request.getRecords() == null) {
-//            context.getLogger().log("There are no records available");
-//            return null;
-//        }
+        TableCollection<ListTablesResult> tables = amazonDynamoDB.listTables();
+        Iterator<Table> iterator = tables.iterator();
+        while (iterator.hasNext()) {
+            Table table = iterator.next();
+            context.getLogger().log("Dynamo db table name:- " + table.getTableName());
+        }
+        Table table = amazonDynamoDB.getTable(tableName);
+        if(table == null)
+            context.getLogger().log("Table not present in dynamoDB");
+
+        if (request.getRecords() == null) {
+            context.getLogger().log("There are no records available");
+            return null;
+        }
 
         if(amazonDynamoDB == null) {
             context.getLogger().log("Dynamo db object is null");
