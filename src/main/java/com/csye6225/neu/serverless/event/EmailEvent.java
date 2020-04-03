@@ -45,21 +45,24 @@ public class EmailEvent {
     private static final String EMAIL_TEXT = "The links for the due bills are :- ";
 
     public Object handleRequest(SNSEvent request, Context context){
-        TableCollection<ListTablesResult> tables = amazonDynamoDB.listTables();
-        Iterator<Table> iterator = tables.iterator();
-        while (iterator.hasNext()) {
-            Table table = iterator.next();
-            context.getLogger().log("Dynamo db table name:- " + table.getTableName());
-        }
-        Table table = amazonDynamoDB.getTable(tableName);
-        if(table == null)
-            context.getLogger().log("Table not present in dynamoDB");
+//        TableCollection<ListTablesResult> tables = amazonDynamoDB.listTables();
+//        Iterator<Table> iterator = tables.iterator();
+//        while (iterator.hasNext()) {
+//            Table table = iterator.next();
+//            context.getLogger().log("Dynamo db table name:- " + table.getTableName());
+//        }
+//        Table table = amazonDynamoDB.getTable(tableName);
+//        if(table == null)
+//            context.getLogger().log("Table not present in dynamoDB");
+//
+//        if (request.getRecords() == null) {
+//            context.getLogger().log("There are no records available");
+//            return null;
+//        }
 
-        if (request.getRecords() == null) {
-            context.getLogger().log("There are no records available");
-            return null;
+        if(amazonDynamoDB == null) {
+            context.getLogger().log("Dynamo db object is null");
         }
-
         String messageFromSQS =  request.getRecords().get(0).getSNS().getMessage();
         String emailRecipient = messageFromSQS.split(",")[0];
         Item item = amazonDynamoDB.getTable(tableName).getItem("id", emailRecipient);
