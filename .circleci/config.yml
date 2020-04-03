@@ -40,9 +40,6 @@ jobs:
             cp ../target/serverless-0.0.1-SNAPSHOT.jar .
             echo "The directory contents are "
             ls -ltr
-            echo "Compressing files in the artifact directory"
-            zip -r serverless-${CIRCLE_BUILD_NUM}.zip .
-            ls -ltr
             pwd
             echo "Inside root directory"
             cd ..
@@ -53,7 +50,7 @@ jobs:
           command: |
             echo "Uploading artifact to S3 bucket ${CODE_DEPLOY_S3_BUCKET}"
             cd serverlessArtifact
-            aws s3 cp serverless-${CIRCLE_BUILD_NUM}.zip s3://${CODE_DEPLOY_S3_BUCKET}
+            aws s3 cp serverless-0.0.1-SNAPSHOT.jar s3://${CODE_DEPLOY_S3_BUCKET}
             cd ..
       - run:
            name: Update Lambda on S3
