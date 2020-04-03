@@ -26,8 +26,8 @@ public class EmailEvent {
 
     private DynamoDB amazonDynamoDB;
 
-    @Value("${tableName}")
-    private String tableName;
+    //@Value("${tableName}")
+   // private String tableName;
 
 
     public EmailEvent() {
@@ -65,9 +65,9 @@ public class EmailEvent {
         }
         String messageFromSQS =  request.getRecords().get(0).getSNS().getMessage();
         String emailRecipient = messageFromSQS.split(",")[0];
-        Item item = amazonDynamoDB.getTable(tableName).getItem("id", emailRecipient);
+        Item item = amazonDynamoDB.getTable("dynamoDBTable").getItem("id", emailRecipient);
         if ((item != null && Long.parseLong(item.get("TTL").toString()) < Instant.now().getEpochSecond() || item == null)) {
-            amazonDynamoDB.getTable(tableName).putItem(new PutItemSpec()
+            amazonDynamoDB.getTable("dynamoDBTable").putItem(new PutItemSpec()
                     .withItem(new Item().withString("id", emailRecipient).withLong("TTL", unixTime)));
             String[] billLinks = messageFromSQS.split(",");
             StringBuilder stringBuilder = new StringBuilder();
